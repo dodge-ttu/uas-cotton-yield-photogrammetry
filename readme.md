@@ -1,1 +1,2 @@
-### This is ongoing analysis related to seeded cotton yield measurements with UAS and photogrammetry.
+# UAS Photogrammetric Cotton Yield Measurements.
+Experimentation to refine methods for non-destructive cotton yield and biomass measurements.
