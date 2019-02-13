@@ -1,8 +1,14 @@
+#!/home/will/uas-cotton-photogrammetry/cp-venv/bin/python
+
 import os
 import sys
 from datetime import datetime
 from qgis.core import QgsProject
 from qgis.core import QgsApplication
+
+# Append processing module location to path.
+sys.path.append("/home/will/uas-cotton-photogrammetry/cp-venv/lib/python3/dist-packages")
+
 import processing
 from processing.core.Processing import Processing
 
@@ -34,17 +40,26 @@ def make_samples(layer_list=None, output_dir=None, input_layer_name=None):
 if __name__ == '__main__':
 
     # Details.
-    plantings = ['p1']
+    plantings = ['p1']*7
     what = 'aoms'
 
-    # Append QGIS to path.
-    sys.path.append("/home/will/uas-cotton-photogrammetry/cp-venv/lib/python3/dist-packages")
-
     # Define input layer.
-    # input_layer = "2018-11-15_65_75_35_rainMatrix_modified"  # yield
-    input_layer = "2017-11-17_75_75_22_odm_orthophoto_modified"
+    input_layer_20_meters = "2017-11-17_75_75_20_odm_orthophoto_modified"
+    input_layer_22_meters = "2017-11-17_75_75_22_odm_orthophoto_modified"
+    input_layer_24_meters = "2017-11-16_75_75_24_odm_orthophoto_modified"
+    input_layer_26_meters = "2017-11-16_75_75_26_odm_orthophoto_modified"
+    input_layer_28_meters = "2017-11-16_75_75_28_odm_orthophoto_modified"
+    input_layer_30_meters = "2017-11-16_75_75_30_odm_orthophoto_modified"
 
-    layer_ids = [input_layer]
+
+    layer_ids = [
+        input_layer_20_meters,
+        input_layer_22_meters,
+        input_layer_24_meters,
+        input_layer_26_meters,
+        input_layer_28_meters,
+        input_layer_30_meters,
+    ]
 
     # Define path to output directory.
     an_output_dir = "/home/will/uas-cotton-photogrammetry/output/extracted_samples_2017/"

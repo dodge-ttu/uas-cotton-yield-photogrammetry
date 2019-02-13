@@ -1,8 +1,14 @@
+#!/home/will/uas-cotton-photogrammetry/cp-venv/bin/python
+
 import os
 import sys
 from datetime import datetime
 from qgis.core import QgsProject
 from qgis.core import QgsApplication
+
+# Append processing module location to path.
+sys.path.append("/home/will/uas-cotton-photogrammetry/cp-venv/lib/python3/dist-packages")
+
 import processing
 from processing.core.Processing import Processing
 
@@ -37,9 +43,7 @@ if __name__ == '__main__':
     plantings = ['earlier', 'later']
     what = 'aoms'
 
-    ## Append to path the location for processing module. I've learned that this can now be handled in PyCharm for this
-    ## just a specific interpreter.
-    # sys.path.append("/home/will/uas-cotton-photogrammetry/cp-venv/lib/python3/dist-packages")
+
 
     # Define input layer.
     # input_layer = "2018-11-15_65_75_35_rainMatrix_modified"  # yield
