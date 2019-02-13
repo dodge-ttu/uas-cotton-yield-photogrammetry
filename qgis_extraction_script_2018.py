@@ -42,8 +42,12 @@ if __name__ == '__main__':
 
     # Define input layer.
     # input_layer = "2018-11-15_65_75_35_rainMatrix_modified"  # yield
-    input_layer_name_earlier = "2018-10-26_65_75_30_rainMatrix_odm_orthophoto_modified"
-    input_layer_name_later = "2018-11-15_65_75_35_rainMatrix_modified"
+    input_layer_20_meters = "2017-11-17_75_75_20_odm_orthophoto_modified"
+    input_layer_22_meters = "2017-11-17_75_75_22_odm_orthophoto_modified"
+    input_layer_24_meters = "2017-11-17_75_75_24_odm_orthophoto_modified"
+    input_layer_26_meters = "2017-11-17_75_75_26_odm_orthophoto_modified"
+    input_layer_28_meters = "2017-11-17_75_75_28_odm_orthophoto_modified"
+    input_layer_30_meters = "2017-11-17_75_75_30_odm_orthophoto_modified"
 
     layer_ids = [input_layer_name_earlier, input_layer_name_later]
 
@@ -69,7 +73,7 @@ if __name__ == '__main__':
     # Initialize processing.
     Processing.initialize()
 
-    # Return the layer tree and isolate the group of interest to programmatically extract the individual.
+    # Return the layer tree and isolate the group of interest to programmatically extract the individual samples.
     my_layer_tree = QgsProject.instance().layerTreeRoot()
     my_group = my_layer_tree.findGroup("individual_sample_spaces_2018")
 
