@@ -4,12 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from decimal import Decimal
 from matplotlib import rc
-from equation_plotting_helpers_latex.py import get_poly_hat, clean_poly_eq
+from equation_plotting_helpers_latex import get_poly_hat, clean_poly_eq
 
 if __name__=="__main__":
 
-    # Use LaTex.
-    rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
+    ## Use LaTex.
+    # rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
     ## for Palatino and other serif fonts use:
     # rc('font',**{'family':'serif','serif':['Palatino']})
     rc('text', usetex=True)

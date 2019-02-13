@@ -1,3 +1,5 @@
+import numpy as np
+
 # Must have latex installed.
 def clean_poly_eq(coefficients, scientific_notation=True):
     n = len(coefficients)

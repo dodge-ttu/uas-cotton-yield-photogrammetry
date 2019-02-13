@@ -37,17 +37,14 @@ if __name__ == '__main__':
     plantings = ['earlier', 'later']
     what = 'aoms'
 
-    # Append QGIS to path.
-    sys.path.append("/home/will/uas-cotton-photogrammetry/cp-venv/lib/python3/dist-packages")
+    ## Append to path the location for processing module. I've learned that this can now be handled in PyCharm for this
+    ## just a specific interpreter.
+    # sys.path.append("/home/will/uas-cotton-photogrammetry/cp-venv/lib/python3/dist-packages")
 
     # Define input layer.
     # input_layer = "2018-11-15_65_75_35_rainMatrix_modified"  # yield
-    input_layer_20_meters = "2017-11-17_75_75_20_odm_orthophoto_modified"
-    input_layer_22_meters = "2017-11-17_75_75_22_odm_orthophoto_modified"
-    input_layer_24_meters = "2017-11-17_75_75_24_odm_orthophoto_modified"
-    input_layer_26_meters = "2017-11-17_75_75_26_odm_orthophoto_modified"
-    input_layer_28_meters = "2017-11-17_75_75_28_odm_orthophoto_modified"
-    input_layer_30_meters = "2017-11-17_75_75_30_odm_orthophoto_modified"
+    input_layer_name_earlier = "2018-10-26_65_75_30_rainMatrix_odm_orthophoto_modified"
+    input_layer_name_later = "2018-11-15_65_75_35_rainMatrix_modified"
 
     layer_ids = [input_layer_name_earlier, input_layer_name_later]
 
