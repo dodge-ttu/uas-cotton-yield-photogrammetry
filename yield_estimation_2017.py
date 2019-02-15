@@ -50,29 +50,45 @@ if __name__ == "__main__":
     what = 'aoms'
 
     # Define path to output directory.
-    output_dir = "/home/will/uas-cotton-photogrammetry/output/yield_counted_marked_2018/"
+    output_dir = "/home/will/uas-cotton-photogrammetry/output/yield_counted_marked_2017/"
 
-    # Provide an ID for the analysis.
-    input_layer_name_earlier = "2018-10-26_65_75_30_rainMatrix_odm_orthophoto_modified"  # 100 pixels / meter
-    input_layer_name_later = "2018-11-15_65_75_35_rainMatrix_modified"  # 90.9091 pixels / meter
+    # Details.
+    plantings = ['p1']*12 + ['p2']*17
+    what = 'aoms'
+    altitude_per_flight = [20,22,24,26,28,30]
+
+    # Define input layer.
+    input_layer_20_meters = "2017-11-17_75_75_20_odm_orthophoto_modified" # 153.846pixels/meter
+    input_layer_22_meters = "2017-11-17_75_75_22_odm_orthophoto_modified" # 133.333pixels/meter
+    input_layer_24_meters = "2017-11-16_75_75_24_odm_orthophoto_modified" # 117.647pixels/meter
+    input_layer_26_meters = "2017-11-16_75_75_26_odm_orthophoto_modified" # 105.263pixels/meter
+    input_layer_28_meters = "2017-11-16_75_75_28_odm_orthophoto_modified" # 100pixels/meter
+    input_layer_30_meters = "2017-11-16_75_75_30_odm_orthophoto_modified" # 98pixels/meter
+
+    layer_ids = [
+        input_layer_20_meters,
+        input_layer_22_meters,
+        input_layer_24_meters,
+        input_layer_26_meters,
+        input_layer_28_meters,
+        input_layer_30_meters,
+    ]
 
     # The GSD value is given to Open Drone Map in the orthophoto creation phase. The value is stored in a log file.
     # Resulting actual GSD is simply a matter of how things were set during the processing phase, not a reflection of
     # max GSD for a flight simply based on altitude.
 
-    layer_ids = [input_layer_name_earlier, input_layer_name_later]
-
-    # GSD values for each input layer.
-    gsd_per_layer = [1, .91]
+    # GSD (cm/pixel) values for each input layer.
+    gsd_per_layer = [.65, .75, .85, .95, 1, 1]
 
     # Make a df list.
     df_ls = []
 
     # Process desired plantings.
-    for (planting, layer_id, GSD) in zip(plantings, layer_ids, gsd_per_layer):
+    for (layer_id, GSD, altitude) in zip(layer_ids, gsd_per_layer, altitude_per_flight):
 
         # Define path to read in extracted samples.
-        input_dir = "/home/will/uas-cotton-photogrammetry/output/extracted_samples_2018/" \
+        input_dir = "/home/will/uas-cotton-photogrammetry/output/extracted_samples_2017/" \
                     "{0}-{1}-extracted".format(planting, layer_id)
 
         # Get extracted sample file names.
@@ -105,20 +121,22 @@ if __name__ == "__main__":
         # Record GSD.
         df.loc[:, "GSD"] = GSD
 
+        # Record altutude.
+        df.loc[:, "altitude"] = altitude
+
         # Calculate 2D yield area.
         df.loc[:, "2D_yield_area"] = df.loc[:, "pix_counts"] * GSD
 
-        # Get per AOM area, manually exported from QGIS at the moment.
-        virtual_sample_spaces_in_meters = '/home/will/uas-cotton-photogrammetry/2018_rainMatrix_virtual_aom_size.csv'
+        # All sample spaces were the same in 2017 at one meter.
 
-        # Get area data for each virtual region of interest.
-        df_area = pd.read_csv(virtual_sample_spaces_in_meters)
-
-        # Generate an ID for the join column from the filename written as: spatial_p6_aom_15.tif
-        df_area.loc[:, 'id_tag'] = ['id_{0}.tif'.format(str(x).zfill(2)) for x in df_area.loc[:, 'id_tag'].values]
-
-        # Merge data.
-        df_both = df.merge(df_area, left_on='id_tag', right_on='id_tag', how='outer')
+        # # Get area data for each virtual region of interest.
+        # df_area = pd.read_csv(virtual_sample_spaces_in_meters)
+        #
+        # # Generate an ID for the join column from the filename written as: spatial_p6_aom_15.tif
+        # df_area.loc[:, 'id_tag'] = ['id_{0}.tif'.format(str(x).zfill(2)) for x in df_area.loc[:, 'id_tag'].values]
+        #
+        # # Merge data.
+        # df_both = df.merge(df_area, left_on='id_tag', right_on='id_tag', how='outer')
 
         # # Yield model y = 0.658 * x - 35.691 based on current findings
         # df_both.loc[:, 'est_yield'] = df_both.loc[:, '2D_yield_area'] * 0.658
@@ -135,11 +153,11 @@ if __name__ == "__main__":
         # # Lint Yield, turnout.
         # df_both.loc[:, 'turnout_lb_per_ac_yield'] = df_both.loc[:, 'lb_per_ac_yield'] * .38
 
-        # Write pix count data.
-        df_both.to_csv(os.path.join(directory_path, "pix-counts-for-{0}.csv".format(layer_id)))
+        # # Write pix count data.
+        # df_both.to_csv(os.path.join(directory_path, "pix-counts-for-{0}.csv".format(layer_id)))
 
         # Store df from early planting to be combined later.
-        df_ls.append(df_both.dropna(axis=0, how='any'))
+        df_ls.append(df.dropna(axis=0, how='any'))
 
         # Write marked sample images for inspection.
         for (image, image_name) in images_counted_and_marked:
@@ -157,22 +175,25 @@ if __name__ == "__main__":
             df = pd.DataFrame({'x':x,'y':y,'h':h,'w':w})
             df.to_csv(os.path.join(yield_pixel_location_csv_dir, '{0}_white-pixel-locations.csv'.format(layer_id)))
 
-    df_2018_pixel_counts = pd.concat(df_ls, ignore_index=True)
+    df_2017_pixel_counts = pd.concat(df_ls, ignore_index=True)
 
     # Great numeric re pattern from Stack Overflow for pulling the sample id integers from id tag for join key.
     numeric_const_pattern = '[-+]? (?: (?: \d* \. \d+ ) | (?: \d+ \.? ) )(?: [Ee] [+-]? \d+ ) ?'
     rx = re.compile(numeric_const_pattern, re.VERBOSE)
 
     # Pull the integers from the id tag but only look at the portion of the tag before the '.tif' part.
-    df_2018_pixel_counts.loc[:, 'id'] = df_2018_pixel_counts.loc[:, 'id_tag'].apply(lambda x: rx.findall(x[:-4])[0])
-    df_2018_pixel_counts.loc[:, 'id'] = df_2018_pixel_counts.loc[:, 'id'].apply(lambda x: int(x))
+    df_2017_pixel_counts.loc[:, 'id'] = df_2017_pixel_counts.loc[:, 'id_tag'].apply(lambda x: rx.findall(x[:-4])[0])
+    df_2017_pixel_counts.loc[:, 'id'] = df_2017_pixel_counts.loc[:, 'id'].apply(lambda x: int(x))
 
-    df_2018_pixel_counts.to_csv(os.path.join(output_dir, "2018_pixel_counts_and_2D_yield_area.csv"))
+    # Unique id.
+    df_2017_pixel_counts.loc[:, "unique_id"] = df_2017_pixel_counts["id"].map(str) + "_" + df_2017_pixel_counts["altitude"].map(str)
+
+    df_2017_pixel_counts.to_csv(os.path.join(output_dir, "2018_pixel_counts_and_2D_yield_area.csv"))
 
     df_hand_harvested_yield = pd.read_csv("/home/will/uas-cotton-photogrammetry/" \
-                                          "2018_rainMatrix_hand_harvested_sample_weights.csv")
+                                          "2017_rainMatrix_hand_harvested_sample_weights.csv")
 
-    pix_counts_hand_harvested_yield = df_2018_pixel_counts.merge(df_hand_harvested_yield, on='id', how='outer')
+    pix_counts_hand_harvested_yield = df_2017_pixel_counts.merge(df_hand_harvested_yield, on='id', how='outer')
 
     # Sort data frame by id.
     pix_counts_hand_harvested_yield.sort_values(by=['id'], inplace=True)
@@ -181,6 +202,6 @@ if __name__ == "__main__":
     pix_counts_hand_harvested_yield.index = list(range(len(pix_counts_hand_harvested_yield)))
 
     # Save a copy.
-    pix_counts_hand_harvested_yield.to_csv(os.path.join(output_dir, "2018_pixel_counts_and_hand_harvested_yield.csv"))
+    pix_counts_hand_harvested_yield.to_csv(os.path.join(output_dir, "2017_pixel_counts_and_hand_harvested_yield.csv"))
 
 

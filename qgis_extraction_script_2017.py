@@ -40,25 +40,32 @@ def make_samples(layer_list=None, output_dir=None, input_layer_name=None):
 if __name__ == '__main__':
 
     # Details.
-    plantings = ['p1']*7
     what = 'aoms'
 
-    # Define input layer.
-    input_layer_20_meters = "2017-11-17_75_75_20_odm_orthophoto_modified"
-    input_layer_22_meters = "2017-11-17_75_75_22_odm_orthophoto_modified"
-    input_layer_24_meters = "2017-11-16_75_75_24_odm_orthophoto_modified"
-    input_layer_26_meters = "2017-11-16_75_75_26_odm_orthophoto_modified"
-    input_layer_28_meters = "2017-11-16_75_75_28_odm_orthophoto_modified"
-    input_layer_30_meters = "2017-11-16_75_75_30_odm_orthophoto_modified"
+    # Input layers for plantings one and two.
+    input_layer_20_meters_p1_p2 = "2017-11-17_75_75_20_odm_orthophoto_modified"
+    input_layer_22_meters_p1_p2 = "2017-11-17_75_75_22_odm_orthophoto_modified"
+    input_layer_24_meters_p1_p2 = "2017-11-16_75_75_24_odm_orthophoto_modified"
+    input_layer_26_meters_p1_p2 = "2017-11-16_75_75_26_odm_orthophoto_modified"
+    input_layer_28_meters_p1_p2 = "2017-11-16_75_75_28_odm_orthophoto_modified"
+    input_layer_30_meters_p1_p2 = "2017-11-16_75_75_30_odm_orthophoto_modified"
 
+    # Input layers for plantings three and four.
+    input_layer_20_meters_p3_p4 = "2017-12-01_75_75_20_validation_odm_orthophoto_modified"
+    input_layer_24_meters_p3_p4 = "2017-12-01_75_75_20_validation_odm_orthophoto_modified"
 
-    layer_ids = [
-        input_layer_20_meters,
-        input_layer_22_meters,
-        input_layer_24_meters,
-        input_layer_26_meters,
-        input_layer_28_meters,
-        input_layer_30_meters,
+    layer_ids_plantings_1_2 = [
+        input_layer_20_meters_p1_p2,
+        input_layer_22_meters_p1_p2,
+        input_layer_24_meters_p1_p2,
+        input_layer_26_meters_p1_p2,
+        input_layer_28_meters_p1_p2,
+        input_layer_30_meters_p1_p2,
+    ]
+
+    layer_ids_plantings_3_4 = [
+        input_layer_20_meters_p3_p4,
+        input_layer_24_meters_p3_p4,
     ]
 
     # Define path to output directory.
@@ -90,35 +97,54 @@ if __name__ == '__main__':
     # Generate a list of items in the group of interest.
     a_layer_list = my_group.children()
 
+    # Break list out by planting date.
+    planting_1 = a_layer_list[:12]
+    planting_2 = a_layer_list[12:29]
+    planting_3 = a_layer_list[29:40]
+    planting_4 = a_layer_list[40:]
+
+    # List of list tuples containing chunk and respective planting id.
+    layer_ls_chuncks = [
+        (planting_1, 'p1'),
+        (planting_2, 'p2'),
+        (planting_3, 'p3'),
+        (planting_4, 'p4'),
+    ]
+
     # Process for desired plantings
-    for (planting, layer_id) in zip(plantings, layer_ids):
+    for (chunk, planting) in layer_ls_chuncks:
 
-        # Get date to tag output.
-        raw_time = datetime.now()
-        formatted_time = datetime.strftime(raw_time, "%Y-%m-%d %H:%M:%S")
+        if (planting == 'p1') or (planting == 'p2'):
+            layer_ids = layer_ids_plantings_1_2
+        else:
+            layer_ids = layer_ids_plantings_3_4
 
-        # Create an out sub-directory.
-        directory_path = os.path.join(an_output_dir, "{0}-{1}-extracted".format(planting, layer_id))
-        if not os.path.exists(directory_path):
-            os.makedirs(directory_path)
+        for layer_id in layer_ids:
+            # Get date to tag output.
+            raw_time = datetime.now()
+            formatted_time = datetime.strftime(raw_time, "%Y-%m-%d %H:%M:%S")
 
-        print(directory_path)
+            # Create an out sub-directory.
+            directory_path = os.path.join(an_output_dir, "{0}-{1}-extracted".format(layer_id, planting))
+            if not os.path.exists(directory_path):
+                os.makedirs(directory_path)
 
-        # Process sample spaces for early plantings.
-        params = {
-            'output_dir': directory_path,
-            'layer_list': a_layer_list,
-            'input_layer_name': layer_id,
-        }
+            print(directory_path)
 
-        make_samples(**params)
+            params = {
+                'output_dir': directory_path,
+                'layer_list': chunk,
+                'input_layer_name': layer_id,
+            }
 
-        # Write a meta-data file with the details of this extraction for future reference.
-        with open(os.path.join(directory_path, "sample_meta_data.txt"), "w") as tester:
-            tester.write("""Sample Layer ID: {0}\n
-                            Number of Samples: {1}\n
-                            Samples Generated On: {2}\n
-                            """.format('__'.join(layer_ids), len(a_layer_list), formatted_time))
+            make_samples(**params)
+
+            # Write a meta-data file with the details of this extraction for future reference.
+            with open(os.path.join(directory_path, "sample_meta_data.txt"), "w") as tester:
+                tester.write("""Sample Layer ID: {0}\n
+                                Number of Samples: {1}\n
+                                Samples Generated On: {2}\n
+                                """.format('__'.join(layer_ids), len(a_layer_list), formatted_time))
 
 
     # Close project.

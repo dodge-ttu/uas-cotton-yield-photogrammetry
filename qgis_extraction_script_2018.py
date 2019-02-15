@@ -97,7 +97,6 @@ if __name__ == '__main__':
 
         print(directory_path)
 
-        # Process sample spaces for early plantings.
         params = {'output_dir': directory_path,
                   'layer_list': layer_chunk,
                   'input_layer_name': layer_id}
@@ -110,7 +109,6 @@ if __name__ == '__main__':
                             Number of Samples: {1}\n
                             Samples Generated On: {2}\n
                             """.format('__'.join(layer_ids), len(a_layer_list), formatted_time))
-
 
     # Close project.
     qgs.exitQgis()
