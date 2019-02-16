@@ -40,17 +40,30 @@ def make_samples(layer_list=None, output_dir=None, input_layer_name=None):
 if __name__ == '__main__':
 
     # Details.
-    plantings = ['earlier', 'later']
     what = 'aoms'
 
+    # Input layers for plantings one, two, three, and four.
+    input_layer_20_meters_p1_p3 = "2018-10-23_65_75_20_rainMatrix_odm_orthophoto_modified"  # GSD .75
+    input_layer_35_meters_p1_p3 = "2018-10-23_65_75_35_rainMatrix_odm_orthophoto_modified"  # GSD 1.1
+    input_layer_50_meters_p1_p3 = "2018-10-23_65_75_50_rainMatrix_odm_orthophoto_modified"  # GSD 1.6
+    input_layer_75_meters_p1_p3 = "2018-10-23_65_75_75_rainMatrix_odm_orthophoto_modified"  # GSD 2.5
+    input_layer_100_meters_p1_p3 = "2018-10-23_65_75_100_rainMatrix_odm_orthophoto_modified"  # GSD 3.0
 
+    # Input layers for plantings five, six, and seven.
+    input_layer_35_meters_p4_p7 = "2018-11-15_65_75_35_rainMatrix_modified"  # GSD 1.1
 
-    # Define input layer.
-    # input_layer = "2018-11-15_65_75_35_rainMatrix_modified"  # yield
-    input_layer_name_earlier = "2018-10-26_65_75_30_rainMatrix_odm_orthophoto_modified"
-    input_layer_name_later = "2018-11-15_65_75_35_rainMatrix_modified"
+    layer_ids_plantings_p1_p4 = [
+        input_layer_20_meters_p1_p3,
+        input_layer_35_meters_p1_p3,
+        input_layer_50_meters_p1_p3,
+        input_layer_75_meters_p1_p3,
+        input_layer_100_meters_p1_p3,
 
-    layer_ids = [input_layer_name_earlier, input_layer_name_later]
+    ]
+
+    layer_ids_plantings_p4_p7 = [
+        input_layer_35_meters_p4_p7,
+    ]
 
     # Define path to output directory.
     an_output_dir = "/home/will/uas-cotton-photogrammetry/output/extracted_samples_2018/"
@@ -81,34 +94,59 @@ if __name__ == '__main__':
     # Generate a list of items in the group of interest.
     a_layer_list = my_group.children()
 
-    layer_chunks = [a_layer_list[:48], a_layer_list[47:]]
+    # Break list out by planting date.
+    planting_1 = a_layer_list[:30]
+    planting_2 = a_layer_list[30:39]
+    planting_3 = a_layer_list[39:47]
+    planting_4 = a_layer_list[47:55]
+    planting_5 = a_layer_list[55:61]
+    planting_6 = a_layer_list[61:69]
+    planting_7 = a_layer_list[69:76]
+
+    # List of list tuples containing chunk and respective planting id.
+    layer_ls_chunks = [
+        (planting_1, 'p1'),
+        (planting_2, 'p2'),
+        (planting_3, 'p3'),
+        (planting_4, 'p4'),
+        (planting_5, 'p5'),
+        (planting_6, 'p6'),
+        (planting_7, 'p7'),
+    ]
 
     # Process for desired plantings
-    for (planting, layer_id, layer_chunk) in zip(plantings, layer_ids, layer_chunks):
+    for (chunk, planting) in layer_ls_chunks:
 
-        # Get date to tag output.
-        raw_time = datetime.now()
-        formatted_time = datetime.strftime(raw_time, "%Y-%m-%d %H:%M:%S")
+        if planting in ('p1', 'p2', 'p3'):
+            layer_ids = layer_ids_plantings_p1_p4
+        else:
+            layer_ids = layer_ids_plantings_p4_p7
 
-        # Create an out sub-directory.
-        directory_path = os.path.join(an_output_dir, "{0}-{1}-extracted".format(planting, layer_id))
-        if not os.path.exists(directory_path):
-            os.makedirs(directory_path)
+        for layer_id in layer_ids:
 
-        print(directory_path)
+            # Get date to tag output.
+            raw_time = datetime.now()
+            formatted_time = datetime.strftime(raw_time, "%Y-%m-%d %H:%M:%S")
 
-        params = {'output_dir': directory_path,
-                  'layer_list': layer_chunk,
-                  'input_layer_name': layer_id}
+            # Create an out sub-directory.
+            directory_path = os.path.join(an_output_dir, "{0}-{1}-extracted".format(layer_id, planting))
+            if not os.path.exists(directory_path):
+                os.makedirs(directory_path)
 
-        make_samples(**params)
+            print(directory_path)
 
-        # Write a meta-data file with the details of this extraction for future reference.
-        with open(os.path.join(directory_path, "sample_meta_data.txt"), "w") as tester:
-            tester.write("""Sample Layer ID: {0}\n
-                            Number of Samples: {1}\n
-                            Samples Generated On: {2}\n
-                            """.format('__'.join(layer_ids), len(a_layer_list), formatted_time))
+            params = {'output_dir': directory_path,
+                      'layer_list': chunk,
+                      'input_layer_name': layer_id}
+
+            make_samples(**params)
+
+            # Write a meta-data file with the details of this extraction for future reference.
+            with open(os.path.join(directory_path, "sample_meta_data.txt"), "w") as tester:
+                tester.write("""Sample Layer ID: {0}\n
+                                Number of Samples: {1}\n
+                                Samples Generated On: {2}\n
+                                """.format('__'.join(layer_ids), len(a_layer_list), formatted_time))
 
     # Close project.
     qgs.exitQgis()

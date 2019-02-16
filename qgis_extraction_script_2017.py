@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     # Input layers for plantings three and four.
     input_layer_20_meters_p3_p4 = "2017-12-01_75_75_20_validation_odm_orthophoto_modified"
-    input_layer_24_meters_p3_p4 = "2017-12-01_75_75_20_validation_odm_orthophoto_modified"
+    input_layer_24_meters_p3_p4 = "2017-12-01_75_75_24_validation_odm_orthophoto_modified"
 
     layer_ids_plantings_1_2 = [
         input_layer_20_meters_p1_p2,
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     # Initialize processing.
     Processing.initialize()
 
-    # Return the layer tree and isolate the group of interest to programmatically extract the individual.
+    # Return the layer tree and isolate the group of interest to programmatically extract the individual samples.
     my_layer_tree = QgsProject.instance().layerTreeRoot()
     my_group = my_layer_tree.findGroup("individual_sample_spaces_2017")
 
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     planting_4 = a_layer_list[40:]
 
     # List of list tuples containing chunk and respective planting id.
-    layer_ls_chuncks = [
+    layer_ls_chunks = [
         (planting_1, 'p1'),
         (planting_2, 'p2'),
         (planting_3, 'p3'),
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     ]
 
     # Process for desired plantings
-    for (chunk, planting) in layer_ls_chuncks:
+    for (chunk, planting) in layer_ls_chunks:
 
         if (planting == 'p1') or (planting == 'p2'):
             layer_ids = layer_ids_plantings_1_2
