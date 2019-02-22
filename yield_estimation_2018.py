@@ -59,21 +59,23 @@ if __name__ == "__main__":
     input_layer_35_meters_p1_p3 = "2018-10-23_65_75_35_rainMatrix_odm_orthophoto_modified"  # GSD 1.1
     input_layer_50_meters_p1_p3 = "2018-10-23_65_75_50_rainMatrix_odm_orthophoto_modified"  # GSD 1.6
     input_layer_75_meters_p1_p3 = "2018-10-23_65_75_75_rainMatrix_odm_orthophoto_modified"  # GSD 2.5
-    input_layer_100_meters_p1_p3 = "2018-10-23_65_75_100_rainMatrix_odm_orthophoto_modified" # GSD 3.0
+    input_layer_100_meters_p1_p3 = "2018-10-23_65_75_100_rainMatrix_odm_orthophoto_modified"  # GSD 3.0
+    input_layer_30_meters_p1_p3 = "2018-10-26_65_75_30_rainMatrix_odm_orthophoto_modified"  # GSD 1
 
     # Input layers for plantings five, six, and seven.
-    input_layer_35_meters_p4_p7 = "2018-11-15_65_75_35_rainMatrix_modified"  # GSD 1.1
+    input_layer_35_meters_p4_p7_2018_11_09 = "2018-11-09_65_75_35_rainMatrix_odm_orthophoto_modified"  # 1.1
+    input_layer_35_meters_p4_p7_2018_11_15 = "2018-11-15_65_75_35_rainMatrix_modified"  # GSD 1.1
 
-    # The GSD value is given to Open Drone Map in the orthophoto creation phase. The value is stored in a log file.
-    # Resulting actual GSD is simply a matter of how things were set during the processing phase, not a reflection of
-    # max GSD for a flight simply based on altitude.
+    # The GSD value is given to Open Drone Map in the orthophoto creation phase.
     layer_ids_and_info = [
         (input_layer_20_meters_p1_p3, .75, 20, 200),
-        (input_layer_35_meters_p1_p3, 1.1, 35, 200),
+        (input_layer_35_meters_p1_p3, 1.0, 35, 200),
         (input_layer_50_meters_p1_p3, 1.6, 50, 200),
-        (input_layer_75_meters_p1_p3, 2.5, 75, 200),
-        (input_layer_100_meters_p1_p3, 3.0, 100, 200),
-        (input_layer_35_meters_p4_p7, 1.1, 35, 240),
+        (input_layer_75_meters_p1_p3, 2.5, 75, 190),
+        (input_layer_100_meters_p1_p3, 3.0, 100, 180),
+        (input_layer_30_meters_p1_p3, 1, 30, 200),
+        (input_layer_35_meters_p4_p7_2018_11_09, 1.1, 35, 200),
+        (input_layer_35_meters_p4_p7_2018_11_15, 1.0, 35, 240),
     ]
 
     # The GSD value is given to Open Drone Map in the orthophoto creation phase. The value is stored in a log file.
@@ -186,6 +188,6 @@ if __name__ == "__main__":
     pix_counts_hand_harvested_yield.index = list(range(len(pix_counts_hand_harvested_yield)))
 
     # Save a copy.
-    pix_counts_hand_harvested_yield.to_csv(os.path.join(output_dir, "2018_pixel_counts_and_hand_harvested_yield.csv"))
+    pix_counts_hand_harvested_yield.to_csv(os.path.join(output_dir, "2018_pixel_counts_and_hand_harvested_yield.csv"), index=False)
 
 

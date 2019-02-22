@@ -161,9 +161,6 @@ if __name__ == "__main__":
     df_2017_pixel_counts.loc[:, 'id'] = df_2017_pixel_counts.loc[:, 'id_tag'].apply(lambda x: rx.findall(x[:-4])[0])
     df_2017_pixel_counts.loc[:, 'id'] = df_2017_pixel_counts.loc[:, 'id'].apply(lambda x: int(x))
 
-    # Unique id.
-    df_2017_pixel_counts.loc[:, "unique_id"] = df_2017_pixel_counts["id"].map(str) + "_" + df_2017_pixel_counts["altitude"].map(str)
-
     df_2017_pixel_counts.to_csv(os.path.join(output_dir, "2017_pixel_counts_and_2D_yield_area.csv"))
 
     df_hand_harvested_yield = pd.read_csv("/home/will/uas-cotton-photogrammetry/" \
@@ -178,6 +175,6 @@ if __name__ == "__main__":
     pix_counts_hand_harvested_yield.index = list(range(len(pix_counts_hand_harvested_yield)))
 
     # Save a copy.
-    pix_counts_hand_harvested_yield.to_csv(os.path.join(output_dir, "2017_pixel_counts_and_hand_harvested_yield.csv"))
+    pix_counts_hand_harvested_yield.to_csv(os.path.join(output_dir, "2017_pixel_counts_and_hand_harvested_yield.csv"), index=False)
 
 

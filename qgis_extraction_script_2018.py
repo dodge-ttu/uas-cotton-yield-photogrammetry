@@ -48,9 +48,11 @@ if __name__ == '__main__':
     input_layer_50_meters_p1_p3 = "2018-10-23_65_75_50_rainMatrix_odm_orthophoto_modified"  # GSD 1.6
     input_layer_75_meters_p1_p3 = "2018-10-23_65_75_75_rainMatrix_odm_orthophoto_modified"  # GSD 2.5
     input_layer_100_meters_p1_p3 = "2018-10-23_65_75_100_rainMatrix_odm_orthophoto_modified"  # GSD 3.0
+    input_layer_30_meters_p1_p3 = "2018-10-26_65_75_30_rainMatrix_odm_orthophoto_modified" # GSD 1
 
     # Input layers for plantings five, six, and seven.
-    input_layer_35_meters_p4_p7 = "2018-11-15_65_75_35_rainMatrix_modified"  # GSD 1.1
+    input_layer_35_meters_p4_p7_2018_11_09 = "2018-11-09_65_75_35_rainMatrix_odm_orthophoto_modified"  # 1.1
+    input_layer_35_meters_p4_p7_2018_11_15 = "2018-11-15_65_75_35_rainMatrix_modified"  # GSD 1.1
 
     layer_ids_plantings_p1_p4 = [
         input_layer_20_meters_p1_p3,
@@ -58,11 +60,12 @@ if __name__ == '__main__':
         input_layer_50_meters_p1_p3,
         input_layer_75_meters_p1_p3,
         input_layer_100_meters_p1_p3,
-
+        input_layer_30_meters_p1_p3,
     ]
 
     layer_ids_plantings_p4_p7 = [
-        input_layer_35_meters_p4_p7,
+        input_layer_35_meters_p4_p7_2018_11_09,
+        input_layer_35_meters_p4_p7_2018_11_15,
     ]
 
     # Define path to output directory.
