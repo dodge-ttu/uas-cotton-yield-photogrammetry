@@ -119,10 +119,11 @@ def year_lingress(df, out_path, year, all=False):
                   fontdict={"fontsize": 20},
                   labelpad=20)
 
-    ax.set_ylabel(r"\[\textbf{UAV Measured Seeded Cotton}\ \left({cm}^{2}\right)\]", fontdict={"fontsize": 20},
+    ax.set_ylabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]", fontdict={"fontsize": 20},
                 labelpad=20)
 
     plt.savefig(out_path)
+    plt.close()
 
 
 if __name__=="__main__":

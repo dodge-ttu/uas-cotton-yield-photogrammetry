@@ -108,7 +108,7 @@ def altitude_lingress(df, cols_alts, out_path, year):
         ax.text(function_position_x, function_position_y, line_equation, fontdict={"fontsize": 15}, color=color)
         ax.text(r_square_position_x, r_square_position_y, r_square, fontdict={"fontsize": 15}, color=color)
 
-    ax.set_title(label=r"\[\textbf{UAV Yield vs Hand Harvested by Altitude\ " + str(year) + "}\]",
+    ax.set_title(label=r"\[\textbf{PCCA vs Hand Harvested by Altitude\ " + str(year) + "}\]",
                 fontdict={"fontsize": 20},
                 pad=20)
 
@@ -122,10 +122,12 @@ def altitude_lingress(df, cols_alts, out_path, year):
                   fontdict={"fontsize": 20},
                   labelpad=20)
 
-    ax.set_ylabel(r"\[\textbf{UAV Measured Seeded Cotton}\ \left({cm}^{2}\right)\]", fontdict={"fontsize": 20},
+    ax.set_ylabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]", fontdict={"fontsize": 20},
                 labelpad=20)
 
     plt.savefig(out_path)
+    plt.close()
+
 
 def altitude_lingress_mean(df, out_path, year):
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
@@ -163,7 +165,7 @@ def altitude_lingress_mean(df, out_path, year):
     ax.text(function_position_x, function_position_y, line_equation, fontdict={"fontsize": 24})
     ax.text(r_square_position_x, r_square_position_y, r_square, fontdict={"fontsize": 26})
 
-    ax.set_title(label=r"\[\textbf{UAV Yield Mean Across Altitudes vs Hand Harvested\ " + str(year) + "}\]",
+    ax.set_title(label=r"\[\textbf{PCCA Mean Across Altitudes vs Hand Harvested\ " + str(year) + "}\]",
                  fontdict={"fontsize": 20},
                  pad=20)
 
@@ -177,11 +179,13 @@ def altitude_lingress_mean(df, out_path, year):
                   fontdict={"fontsize": 20},
                   labelpad=20)
 
-    ax.set_ylabel(r"\[\textbf{UAV Measured Seeded Cotton}\ \left({cm}^{2}\right)\]",
+    ax.set_ylabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
 
     plt.savefig(out_path)
+    plt.close()
+
 
 def altitude_multiples(df, out_path, h, w):
 
@@ -224,12 +228,8 @@ def altitude_multiples(df, out_path, h, w):
         ax.text(rsquarex, rsquarey, r_square, fontdict={"fontsize": 13})
         ax.text(altx, alty, altitude, fontdict={"fontsize": 13})
 
-
-        # ax.set_title(label=r"\[\textbf{UAV Seeded Cotton Yield Measurement" + str(year) + "}\]",
-        #              fontdict={"fontsize": 20},
-        #              pad=20)
-
-        ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]", fontdict={"fontsize": 8},
+        ax.set_ylabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]",
+                      fontdict={"fontsize": 8},
                       labelpad=10)
 
         # Grams per meter square on the x axis
@@ -241,10 +241,13 @@ def altitude_multiples(df, out_path, h, w):
         ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
                       fontdict={"fontsize": 8},
                       labelpad=10)
-        fig.suptitle(r"\[\textbf{UAV Yield vs Hand Harvested Altitude\ " + str(year) + "}\]", fontdict={"fontsize": 8},
+
+        fig.suptitle(r"\[\textbf{PCCA vs Hand Harvested By Altitude\ " + str(year) + "}\]", fontdict={"fontsize": 8},
                      x=0.1, y=.95, horizontalalignment='left', verticalalignment='top')
 
-        plt.savefig(out_path)
+    plt.savefig(out_path)
+    plt.close()
+
 
 def r_square_vs_altitude(df, out_path, year):
 
@@ -312,6 +315,7 @@ def r_square_vs_altitude(df, out_path, year):
                 labelpad=20)
 
     plt.savefig(out_path)
+    plt.close()
 
 
 if __name__=="__main__":
