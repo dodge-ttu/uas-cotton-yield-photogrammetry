@@ -148,13 +148,9 @@ def dist_base_vs_dist_gcp(df, out_path):
     plt.close()
 
 
-def dist_base_dist_gcp_interp(df, img, out_path, point_deviation_bounds):
+def dist_base_dist_gcp_interp(df, img, out_path, point_deviation_bounds, gcp_locs):
 
     h, w, c = img.shape
-
-    # lat = df.loc[:, 'lat_x'].values
-    # lon = df.loc[:, 'lon_y'].values
-    # z = df.loc[:, 'distance_to_base_m']
 
     lat = df.loc[:, 'lat_x'].values[:100]
     lon = df.loc[:, 'lon_x'].values[:100]
@@ -167,17 +163,34 @@ def dist_base_dist_gcp_interp(df, img, out_path, point_deviation_bounds):
     lon_min = point_deviation_bounds.loc[:, 'lon'].min()
     lon_max = point_deviation_bounds.loc[:, 'lon'].max()
 
+    gcp_x = gcp_locs.loc[:, 'lon'].values
+    gcp_y = gcp_locs.loc[:, 'lat'].values
+
+    # Filter GCPs out of bounding box
+    gcps_filt = []
+    for (gcp_lon, gcp_lat) in zip(gcp_x, gcp_y):
+        print("lon", lon_min, gcp_lon, lon_max, "lat", lat_min, gcp_lat, lat_max)
+        if (lon_min < gcp_lon < lon_max) and (lat_min < gcp_lat < lat_max):
+            gcps_filt.append((gcp_lon, gcp_lat))
+
+    gcp_x = np.array([i[0] for i in gcps_filt])
+    gcp_y = np.array([i[1] for i in gcps_filt])
+
     lat_diff = lat_max - lat_min
     lon_diff = lon_max - lon_min
 
     x_adjustment = w / lon_diff
     y_adjustment = h / lat_diff
 
-    x = (lon - lon_min) * (x_adjustment * 1.0)
-    y = (lat - lat_min) * (y_adjustment * 1.0)
+    x = (lon - lon_min) * x_adjustment
+    y = (lat - lat_min) * y_adjustment
+
+    gcp_x = (gcp_x-lon_min) * x_adjustment
+    gcp_y = (gcp_y-lat_min) * y_adjustment
 
     # Invert the values for the y axis because the image origin is 'upper left'.
     y = h - y
+    gcp_y = h - gcp_y
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
@@ -210,7 +223,16 @@ def dist_base_dist_gcp_interp(df, img, out_path, point_deviation_bounds):
     cbar.ax.set_ylabel(r"\[\left({cm}\right)\]",
                     fontdict={"fontsize": 20}, labelpad=40, rotation=270)
 
-    plt.scatter(x, y, marker='o', c='b', s=5)
+    sct1 = plt.scatter(x, y, marker='o', c='k', s=5, zorder=1)
+    sct2 = plt.scatter(gcp_x, gcp_y, c='r', s=24, marker='^', zorder=2)
+
+    ax.legend(handles=(sct1, sct2),
+              labels=("Test Sites", "Post-assigned GCP"),
+              loc=2,
+              fontsize=12,
+              framealpha=1.0,
+              markerscale=2,
+              )
 
     ax.set_title(label=r"\[\textbf{Interpolated Mean Deviation From Base Point}\]",
                  fontdict={"fontsize": 20},
@@ -241,6 +263,10 @@ def histogram_all_deviations(df, out_path):
 
     data = df.loc[:, 'distance_to_base_m'].values * 100 # convert to centimeters
     data = data[data < 15.6]
+    print("min deviation {}".format(data.min()))
+    print("max deviation {}".format(data.max()))
+    print("mean deviation {}".format(data.mean()))
+
     bins = np.linspace(0, 20, 41)
     ax.hist(data, color='#0FC25B', edgecolor='k', bins=bins, rwidth=0.80, density=True, alpha=0.5)
 
@@ -298,6 +324,17 @@ if __name__=='__main__':
     df_3_from_base = pd.read_csv('/home/will/uas-cotton-photogrammetry/dist_from_base_non_GCP_measure_3_2018-09-04_75_75_50_rainMatrix_odm_orthophoto_modified.csv', header=[0])
 
     point_deviation_bounds = pd.read_csv('/home/will/uas-cotton-photogrammetry/point_deviation_bounding_box.csv', header=[0])
+
+    gcp_locations = pd.read_csv('/home/will/uas-cotton-photogrammetry/gcp_locations.csv', header=[0])
+
+    gcp_locations = gcp_locations.loc[:, ["Y", "X", "id"]]
+    gcp_columns = [
+        "lat",
+        "lon",
+        "id",
+    ]
+
+    gcp_locations.columns = gcp_columns
 
     dfs_from_gcp = [
         df_1_from_gcp,
@@ -358,7 +395,11 @@ if __name__=='__main__':
 
     dist_interp_outpath = '/home/will/uas-cotton-photogrammetry/output/visuals_all/orthophoto_deviation_interpolation.png'
 
-    dist_base_dist_gcp_interp(df=df_all, img=img, out_path=dist_interp_outpath, point_deviation_bounds=point_deviation_bounds)
+    dist_base_dist_gcp_interp(df=df_all,
+                              img=img,
+                              out_path=dist_interp_outpath,
+                              point_deviation_bounds=point_deviation_bounds,
+                              gcp_locs=gcp_locations)
 
     deviation_histograms = '/home/will/uas-cotton-photogrammetry/output/visuals_all/orthophoto_deviation_histogram.png'
 

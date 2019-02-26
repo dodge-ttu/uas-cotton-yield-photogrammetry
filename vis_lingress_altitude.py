@@ -286,15 +286,15 @@ def r_square_vs_altitude(df, out_path, year):
     plt.xlim(-10,110)
     plt.ylim(.3,1)
 
-    function_position_x = 0
-    function_position_y = .4
+    # function_position_x = 0
+    # function_position_y = .4
 
     r_square_position_x = 0
     r_square_position_y = .5
 
     r_square = r"\[{R}^{2}\ " + str(round(r_square, 3)) + "\]"
 
-    ax.text(function_position_x, function_position_y, line_equation, fontdict={"fontsize": 24})
+    # ax.text(function_position_x, function_position_y, line_equation, fontdict={"fontsize": 24})
     ax.text(r_square_position_x, r_square_position_y, r_square, fontdict={"fontsize": 26})
 
     ax.set_title(label=r"\[\textbf{R Square Values vs Altitude\ " + str(year) + "}\]",
