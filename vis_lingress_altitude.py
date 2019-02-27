@@ -9,13 +9,14 @@ from matplotlib import rc
 def clean_poly_eq(coefficients, scientific_notation=True):
     n = len(coefficients)
     degs = list(range(n))
-    coefficients = ["{0:.2E}".format(i).split('E') for i in coefficients]
+    coefficients = ["{0:.3E}".format(i).split('E') for i in coefficients]
     coefficients.reverse()
+    print(coefficients)
     pieces = []
     for ((cof1,cof2), deg) in zip(coefficients, degs):
         if deg == 0:
             if float(cof1) > 0:
-                piece = "{0}{{E}}^{{{1}}}".format(cof1, cof2)
+                piece = "{0}{{E}}^{{{1}}}".format(cof1, cof2) if cof2 != '+00' else "{0}".format(cof1)
             else:
                 piece = "{0}{{E}}^{{{1}}}".format(cof1, cof2)
 
@@ -73,6 +74,7 @@ def altitude_lingress(df, cols_alts, out_path, year):
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
+    slopes = []
     for (idx, (color, altitude)) in enumerate(cols_alts):
         x = df.loc[df['altitude'] == altitude, 'seed_cott_weight_(g)']
         y = df.loc[df['altitude'] == altitude, '2D_yield_area']
@@ -108,6 +110,8 @@ def altitude_lingress(df, cols_alts, out_path, year):
         ax.text(function_position_x, function_position_y, line_equation, fontdict={"fontsize": 15}, color=color)
         ax.text(r_square_position_x, r_square_position_y, r_square, fontdict={"fontsize": 15}, color=color)
 
+        slopes.append((coeffs[0], year, altitude))
+
     ax.set_title(label=r"\[\textbf{PCCA vs Hand Harvested by Altitude\ " + str(year) + "}\]",
                 fontdict={"fontsize": 20},
                 pad=20)
@@ -127,6 +131,8 @@ def altitude_lingress(df, cols_alts, out_path, year):
 
     plt.savefig(out_path)
     plt.close()
+
+    return slopes
 
 
 def altitude_lingress_mean(df, out_path, year):
@@ -318,6 +324,65 @@ def r_square_vs_altitude(df, out_path, year):
     plt.close()
 
 
+def plot_slopes_from_lingress(slopes, year, out_path):
+    slope = [i[0] for i in slopes]
+    altitude = [i[2] for i in slopes]
+
+    x = altitude
+    y = slope
+
+    print(max(slopes))
+
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+
+    coeffs, poly_eqn, r_square = get_poly_hat(x, y, 2)
+    line_equation = clean_poly_eq(coeffs)
+
+    x_linspace = np.linspace(0, max(x), len(x))
+    y_hat = poly_eqn(x_linspace)
+
+    ax.plot(x_linspace, y_hat, ':', color='#808B96', linewidth=3)
+    ax.plot(x, y, 'o', color='#000000', markersize=8)
+
+    plt.xlim(-10,110)
+    plt.ylim(0, 6)
+
+    function_position_x = 0
+    function_position_y = 0.25
+
+    r_square_position_x = 0
+    r_square_position_y = 0.5
+
+    r_square = r"\[{R}^{2}\ " + str(round(r_square, 3)) + "\]"
+
+    ax.text(function_position_x, function_position_y, line_equation, fontdict={"fontsize": 16})
+    ax.text(r_square_position_x, r_square_position_y, r_square, fontdict={"fontsize": 18})
+
+    ax.set_title(label=r"\[\textbf{Linear Model Slope vs Altitude\]",
+                 fontdict={"fontsize": 20},
+                 pad=20)
+
+    # Grams per meter square on the x axis
+    # ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]",
+    #               fontdict={"fontsize": 20},
+    #               labelpad=20)
+
+    # Grams only on x axis
+    ax.set_xlabel(r"\[\textbf{Altitude}\ \left({m}\right)\]",
+                  fontdict={"fontsize": 20},
+                  labelpad=20)
+
+    ax.set_ylabel(r"\[\textbf{Slope}\]", fontdict={"fontsize": 20},
+                  labelpad=20)
+
+    plt.savefig(out_path)
+    plt.close()
+
+
+
+
+
+
 if __name__=="__main__":
 
     ## Use LaTex.
@@ -410,10 +475,10 @@ if __name__=="__main__":
 
     rsquare_vs_alt_out = os.path.join(directory_path, "UAV_Seeded_Cotton_Yield_r_square_vs_altitude_both_years.png")
 
-    altitude_lingress(df=df17_filt, cols_alts=cols_alts_df17, out_path=all_out_17_filter, year=2017)
-    altitude_lingress(df=df18_filt, cols_alts=cols_alts_df18, out_path=all_out_18_filter, year=2018)
-    altitude_lingress(df=df17, cols_alts=cols_alts_df17, out_path=all_out_17, year=2017)
-    altitude_lingress(df=df18, cols_alts=cols_alts_df18, out_path=all_out_18, year=2018)
+    slopes_17_filt = altitude_lingress(df=df17_filt, cols_alts=cols_alts_df17, out_path=all_out_17_filter, year=2017)
+    slopes_18_filt = altitude_lingress(df=df18_filt, cols_alts=cols_alts_df18, out_path=all_out_18_filter, year=2018)
+    slopes_17 = altitude_lingress(df=df17, cols_alts=cols_alts_df17, out_path=all_out_17, year=2017)
+    slopes_18 = altitude_lingress(df=df18, cols_alts=cols_alts_df18, out_path=all_out_18, year=2018)
 
     altitude_lingress_mean(df=df17_filt, out_path=mean_out_17_filter, year=2017)
     altitude_lingress_mean(df=df18_filt, out_path=mean_out_18_filter, year=2018)
@@ -426,4 +491,13 @@ if __name__=="__main__":
     altitude_multiples(df18, out_path=mult_out_18, h=2, w=3)
 
     r_square_vs_altitude(df=df_filt, out_path=rsquare_vs_alt_out, year='Both Years')
+
+    slopes = slopes_17_filt + slopes_18_filt
+
+    slopes_out = os.path.join(directory_path, "Linear_model_slopes_vs_altitude.png")
+    print(slopes)
+    print(slopes_18_filt)
+    print(slopes_17_filt)
+
+    plot_slopes_from_lingress(slopes=slopes, year='Both Years', out_path=slopes_out)
 

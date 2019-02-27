@@ -38,15 +38,15 @@ plant_harv_17 = [
     (7, 192, 301)
 ]
 
-# Plant DOY, harvest DOY 2018. The maturity dates for this year need to be cleaned up.
+# Plant DOY, harvest DOY 2018.
 plant_harv_18 = [
-    (1, 69, 214),
-    (2, 90, 240),
-    (3, 97, 247),
-    (4, 118, 261),
-    (5, 132, 277),
-    (6, 146, 301),
-    (7, 160, 301)
+    (1, 70, 214),
+    (2, 92, 221),
+    (3, 102, 231),
+    (4, 121, 237),
+    (5, 134, 268),
+    (6, 149, 382),
+    (7, 164, 296)
 ]
 
 # Clean.
