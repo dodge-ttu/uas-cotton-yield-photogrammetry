@@ -130,12 +130,6 @@ def dist_base_vs_dist_gcp(df, out_path):
                  fontdict={"fontsize": 20},
                  pad=20)
 
-    # Grams per meter square on the x axis
-    # ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]",
-    #               fontdict={"fontsize": 20},
-    #               labelpad=20)
-
-    # Grams only on x axis
     ax.set_xlabel(r"\[\textbf{Distance To Nearest GCP}\ \left({m}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
@@ -238,19 +232,6 @@ def dist_base_dist_gcp_interp(df, img, out_path, point_deviation_bounds, gcp_loc
                  fontdict={"fontsize": 20},
                  pad=20)
 
-    # Grams per meter square on the x axis
-    # ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]",
-    #               fontdict={"fontsize": 20},
-    #               labelpad=20)
-    # Grams only on x axis
-    # ax.set_xlabel(r"\[\textbf{Distance To Nearest GCP}\ \left({m}\right)\]",
-    #               fontdict={"fontsize": 20},
-    #               labelpad=20)
-    #
-    # ax.set_ylabel(r"\[\textbf{Deviation From Base Point}\ \left({cm}\right)\]",
-    #               fontdict={"fontsize": 20},
-    #               labelpad=20)
-
     plt.savefig(out_path)
     plt.close()
 
@@ -283,13 +264,6 @@ def histogram_all_deviations(df, out_path):
     ax.set_xlim(-.2, 16.2)
     ax.set_ylim(-0.035, 0.26)
 
-    # Grams per meter square on the x axis
-    # ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]",
-    #               fontdict={"fontsize": 20},
-    #               labelpad=20)
-
-    # Grams only on x axis
-
     ax.set_xlabel(r"\[\textbf{Deviation From Base Layer}\ \left({cm}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
@@ -308,10 +282,6 @@ def histogram_all_deviations(df, out_path):
 
 if __name__=='__main__':
 
-    ## Use LaTex.
-    # rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
-    ## for Palatino and other serif fonts use:
-    # rc('font',**{'family':'serif','serif':['Palatino']})
     rc('text', usetex=True)
 
     df_1_from_gcp = pd.read_csv('/home/will/uas-cotton-photogrammetry/dist_from_GCP_non_GCP_measure_1_2018-07-25_75_75_50_pivot_odm_orthophoto_modified.csv', header=[0])
@@ -403,54 +373,3 @@ if __name__=='__main__':
     deviation_histograms = '/home/will/uas-cotton-photogrammetry/output/visuals_all/orthophoto_deviation_histogram.png'
 
     histogram_all_deviations(df=df_all, out_path=deviation_histograms)
-
-
-
-
-
-
-
-
-
-    # lat_min = point_deviation_bounds.loc[:, 'lat'].min()
-    # lat_max = point_deviation_bounds.loc[:, 'lat'].max()
-    # lon_min = point_deviation_bounds.loc[:, 'lon'].min()
-    # lon_max = point_deviation_bounds.loc[:, 'lon'].max()
-    #
-    # lat = df_all.loc[:, 'lat_x'].values
-    # lon = df_all.loc[:, 'lon_x'].values
-    #
-    # # lat = dfs_merged[0].loc[:, 'lat_x'].values
-    # # lon = dfs_merged[0].loc[:, 'lon_x'].values
-    #
-    # df_gcp = pd.read_csv('/home/will/uas-cotton-photogrammetry/gcp_locations.csv', header=[0])
-    # df_gcp.columns = ['lat', 'lon', 'id', 'nada']
-    #
-    # x = lon
-    # y = lat
-    # x_gcp = df_gcp.loc[:, 'lon'].values
-    # y_gcp = df_gcp.loc[:, 'lat'].values
-    # z = df_all.loc[:, 'distance_to_base_m'].values
-    #
-    # fig, ax = plt.subplots(1,1, figsize=(8, 20))
-    #
-    # ax.tricontour(x, y, z, levels=10, colors='k', linewidths=[0.5], linestyles='--')
-    # cntr1 = ax.tricontourf(x, y, z, levels=100, cmap="RdBu_r")
-    #
-    # fig.colorbar(cntr1, ax=ax)
-    # ax.plot(x, y, 'ko', ms=3)
-    #
-    # fig, ax = plt.subplots(1, 1, figsize=(8, 20))
-    #
-    # # Bottom plot.
-    # triang = tri.Triangulation(x, y)
-    # refiner = tri.UniformTriRefiner(triang)
-    # tri_refi, z_test_refi = refiner.refine_field(z, subdiv=4)
-    # ax.tricontour(tri_refi, z_test_refi, levels=20, colors='k', linewidths=[0.5])
-    # cntr2 = ax.tricontourf(tri_refi, z_test_refi, levels=20, cmap="RdBu_r")
-    # fig.colorbar(cntr2, ax=ax)
-    # ax.plot(x, y, 'ko', ms=3)
-
-
-
-

@@ -116,12 +116,6 @@ def altitude_lingress(df, cols_alts, out_path, year):
                 fontdict={"fontsize": 20},
                 pad=20)
 
-    # Grams per meter square on the x axis
-    # ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]",
-    #               fontdict={"fontsize": 20},
-    #               labelpad=20)
-
-    # Grams only on x axis
     ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
@@ -175,12 +169,6 @@ def altitude_lingress_mean(df, out_path, year):
                  fontdict={"fontsize": 20},
                  pad=20)
 
-    # Grams per meter square on the x axis
-    # ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]",
-    #               fontdict={"fontsize": 20},
-    #               labelpad=20)
-
-    # Grams only on x axis
     ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
@@ -238,12 +226,6 @@ def altitude_multiples(df, out_path, h, w):
                       fontdict={"fontsize": 8},
                       labelpad=10)
 
-        # Grams per meter square on the x axis
-        # ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]",
-        #               fontdict={"fontsize": 20},
-        #               labelpad=20)
-
-        # Grams only on x axis
         ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
                       fontdict={"fontsize": 8},
                       labelpad=10)
@@ -307,12 +289,6 @@ def r_square_vs_altitude(df, out_path, year):
                 fontdict={"fontsize": 20},
                 pad=20)
 
-    # Grams per meter square on the x axis
-    # ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]",
-    #               fontdict={"fontsize": 20},
-    #               labelpad=20)
-
-    # Grams only on x axis
     ax.set_xlabel(r"\[\textbf{Altitude}\ \left({m}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
@@ -362,12 +338,6 @@ def plot_slopes_from_lingress(slopes, year, out_path):
                  fontdict={"fontsize": 20},
                  pad=20)
 
-    # Grams per meter square on the x axis
-    # ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\cdot{m}^{-2}\right)\]",
-    #               fontdict={"fontsize": 20},
-    #               labelpad=20)
-
-    # Grams only on x axis
     ax.set_xlabel(r"\[\textbf{Altitude}\ \left({m}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
@@ -379,16 +349,8 @@ def plot_slopes_from_lingress(slopes, year, out_path):
     plt.close()
 
 
-
-
-
-
 if __name__=="__main__":
 
-    ## Use LaTex.
-    # rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
-    ## for Palatino and other serif fonts use:
-    # rc('font',**{'family':'serif','serif':['Palatino']})
     rc('text', usetex=True)
 
     # Output directory.
@@ -500,4 +462,3 @@ if __name__=="__main__":
     print(slopes_17_filt)
 
     plot_slopes_from_lingress(slopes=slopes, year='Both Years', out_path=slopes_out)
-
