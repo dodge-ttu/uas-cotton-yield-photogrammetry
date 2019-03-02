@@ -10,7 +10,7 @@ from matplotlib import rc
 def pixel_intensity_comaprison(flat_imgs, resized_imgs, out_path, skip_n=20, grid_interval=5):
     # Plot sample site images for each year and a sparkline of the flattened blue channel.
     fig, axs = plt.subplots(6, 2, figsize=(12, 12), gridspec_kw={'width_ratios': [1, 3]})
-    # plt.gray()
+    plt.gray()
     # plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
     for idx, (flat_img, (img, altitude, year)) in enumerate(zip(flat_imgs, resized_imgs)):
         b, g, r = cv2.split(img)
@@ -28,7 +28,7 @@ def pixel_intensity_comaprison(flat_imgs, resized_imgs, out_path, skip_n=20, gri
                             fontdict={"fontsize": 12}, pad=10)
 
         # And a corresponding grid
-        axs[idx, 0].grid(which='minor', axis='both', linestyle='-', color='#2AFF00', linewidth=.2)
+        # axs[idx, 0].grid(which='minor', axis='both', linestyle='-', color='#2AFF00', linewidth=.2)
 
         # Plot sparklines.
         x = np.array(range(len(flat_img[flat_img > 0][::skip_n])))

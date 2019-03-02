@@ -78,8 +78,9 @@ def dist_base_vs_dist_gcp(df, out_path):
     for flight in flights:
         dfs.append(df.loc[df['flight_date'] == flight, :])
 
-    x = df.loc[:, 'distance_to_nearest_gcp_m']
-    y = df.loc[:, 'distance_to_base_m']*100 # scale to cm
+
+    x = df.loc[:, 'distance_to_nearest_gcp_m'].values
+    y = df.loc[:, 'distance_to_base_m'].values*78# scale to cm
 
     max_x = x.max()
     max_y = y.max()
@@ -98,7 +99,7 @@ def dist_base_vs_dist_gcp(df, out_path):
     sctrs = []
     for (df_scatter, marker, color) in zip(dfs, markers, colors):
         x_scatter = df_scatter.loc[:, 'distance_to_nearest_gcp_m'].values
-        y_scatter = df_scatter.loc[:, 'distance_to_base_m']*100 # scale to cm
+        y_scatter = df_scatter.loc[:, 'distance_to_base_m']*78 # scale to cm
         aa = ax.scatter(x_scatter, y_scatter, c=color, marker=marker)
         sctrs.append(aa)
 
@@ -243,6 +244,7 @@ def histogram_all_deviations(df, out_path):
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
     data = df.loc[:, 'distance_to_base_m'].values * 100 # convert to centimeters
+    data = data[data < 15.6]
     print("min deviation {}".format(data.min()))
     print("max deviation {}".format(data.max()))
     print("mean deviation {}".format(data.mean()))
