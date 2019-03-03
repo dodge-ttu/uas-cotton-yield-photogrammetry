@@ -68,9 +68,9 @@ if __name__ == "__main__":
 
     # The GSD value is given to Open Drone Map in the orthophoto creation phase.
     layer_ids_and_info = [
-        (input_layer_35_meters_p1_p3, 1.0, 35, 205),
+        (input_layer_35_meters_p1_p3, 1.0, 35, 250),
         # (input_layer_35_meters_p4_p6, 1.0, 35, 220),
-        (input_layer_35_meters_p7, 1.0, 35, 225),
+        (input_layer_35_meters_p7, 1.0, 35, 240),
     ]
 
     # Make a df list.
@@ -177,32 +177,50 @@ if __name__ == "__main__":
     # Reset index so plotting is not jumbled.
     pcvy.index = list(range(len(pcvy)))
 
-    # Implement yield model as calulated for a 35 meter flight.
+    # Implement yield model as calculated for a 35 meter flight.
     altitude = 35
-    slope = 5.885 - (.1348 * altitude) + (0.0009007 * (altitude**2))
+    slope = -.1018 + (0.01843 * altitude) - (0.0001127 * (altitude**2))
 
     pcvy.loc[:, 'PCCA'] = pcvy.loc[:, 'pix_counts'] * pcvy.loc[:, 'GSD']
 
-    pcvy.loc[:, 'predicted_seed_cott_grams'] = pcvy.loc[:, 'PCCA'] * slope
-    pcvy.loc[:, 'predicted_seed_cott_grams_per_meter'] = pcvy.loc[:, 'predicted_seed_cott_grams'] / pcvy.loc[:, 'area']
-
-    # Convert grams per meter to kilograms per hectare by mutliplying by ten.
-    pcvy.loc[:, 'predicted_kilo_per_ha'] = pcvy.loc[:, 'predicted_seed_cott_grams_per_meter']
-
-    # Convert pounds to kg.
-    pcvy.loc[:, 'machine_harv_kilo'] = pcvy.loc[:, 'yield_pounds'] * 0.453592
+    pcvy.loc[:, 'pred_seed_cott_grams'] = pcvy.loc[:, 'PCCA'] *slope
+    pcvy.loc[:, 'pred_seed_cott_kilos'] = pcvy.loc[:, 'pred_seed_cott_grams'] * .001
 
     # Convert m^2 to ha.
     pcvy.loc[:, 'area_hectares'] = pcvy.loc[:, 'area'] * 0.0001
 
+    # Convert to kilograms per hectare.
+    pcvy.loc[:, 'predicted_kilo_per_ha'] = pcvy.loc[:, 'pred_seed_cott_kilos'] / pcvy.loc[:, 'area_hectares']
+
+    # Convert pounds to kg.
+    pcvy.loc[:, 'machine_harv_kilos'] = pcvy.loc[:, 'yield_pounds'] * 0.453592
+
+    # Convert machine harvest to grams.
+    pcvy.loc[:, 'machine_harv_grams'] = pcvy.loc[:, 'machine_harv_kilos'] * 1000
+
+    # Convert machine harvest to grams per meter square.
+    pcvy.loc[:, 'machine_harv_grams_per_m2'] = pcvy.loc[:, 'machine_harv_grams'] / pcvy.loc[:, 'area']
+
     # Covert yield to kg / ha.
-    pcvy.loc[:, 'yield_kg_per_ha'] = pcvy.loc[:, 'machine_harv_kilo'] / pcvy.loc[:, 'area_hectares']
+    pcvy.loc[:, 'machine_harv_kg_per_ha'] = pcvy.loc[:, 'machine_harv_kilos'] / pcvy.loc[:, 'area_hectares']
 
     # Save a copy.
     pcvy.to_csv(os.path.join(output_dir, "2018_valedation_pixel_counts_and_machine_harvested_yield.csv"), index=False)
 
     # Quick plots.
-    x = pcvy.loc[:, 'yield_kg_per_ha']
+    x = pcvy.loc[:, 'machine_harv_kg_per_ha']
     y = pcvy.loc[:, 'predicted_kilo_per_ha']
 
     plt.plot(x, y, 'o')
+    #
+    # # Quick plots.
+    # x = pcvy.loc[:, 'machine_harv_grams']
+    # y = pcvy.loc[:, 'pred_seed_cott_grams']
+    #
+    # plt.plot(x, y, 'o')
+    #
+    # # Quick plots.
+    # x = pcvy.loc[:, 'machine_harv_kilos']
+    # y = pcvy.loc[:, 'pred_seed_cott_kilos']
+    #
+    # plt.plot(x, y, 'o')

@@ -69,17 +69,18 @@ def get_poly_hat(x_values, y_values, poly_degree):
 
 def altitude_lingress(df, cols_alts, out_path, year):
 
-    max_x = df.loc[df['year'] == year, 'seed_cott_weight_(g)'].max()
-    max_y = df.loc[df['year'] == year, '2D_yield_area'].max()
+    max_y = df.loc[df['year'] == year, 'seed_cott_weight_(g)'].max()
+    max_x = df.loc[df['year'] == year, '2D_yield_area'].max()
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
     slopes = []
     for (idx, (color, altitude)) in enumerate(cols_alts):
-        x = df.loc[df['altitude'] == altitude, 'seed_cott_weight_(g)']
-        y = df.loc[df['altitude'] == altitude, '2D_yield_area']
+        y = df.loc[df['altitude'] == altitude, 'seed_cott_weight_(g)']
+        x = df.loc[df['altitude'] == altitude, '2D_yield_area']
 
         coeffs, poly_eqn, r_square = get_poly_hat(x, y, 1)
+        print(coeffs)
         line_equation = clean_lin_eq(coeffs)
 
         x_linspace = np.linspace(0, max(x), len(x))
@@ -94,14 +95,14 @@ def altitude_lingress(df, cols_alts, out_path, year):
         left, right = plt.xlim()
         bottom, top = plt.ylim()
 
-        altitude_position_x = left + right*.40
-        altitude_position_y = top*.95 - (top*.043)*idx
+        altitude_position_x = right - right*.44
+        altitude_position_y = top*.02 + (top*.043)*idx
 
-        function_position_x = left + right*.15
-        function_position_y = top*.95 - (top*.043)*idx
+        function_position_x = right - right*.37
+        function_position_y = top*.02 + (top*.043)*idx
 
-        r_square_position_x = left + right*.02
-        r_square_position_y = top*.95 - (top*.043)*idx
+        r_square_position_x = right - right*.12
+        r_square_position_y = top*.02 + (top*.043)*idx
 
         altitude_text = r"\[" + str(int(altitude)) + "{m}\]"
         r_square = r"\[{R}^{2}\ " + str(round(r_square, 3)) + "\]"
@@ -112,15 +113,15 @@ def altitude_lingress(df, cols_alts, out_path, year):
 
         slopes.append((coeffs[0], year, altitude))
 
-    ax.set_title(label=r"\[\textbf{PCCA vs Hand Harvested by Altitude\ " + str(year) + "}\]",
+    ax.set_title(label=r"\[\textbf{Hand Harvested vs PCCA by Altitude\ " + str(year) + "}\]",
                 fontdict={"fontsize": 20},
                 pad=20)
 
-    ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
+    ax.set_ylabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
 
-    ax.set_ylabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]", fontdict={"fontsize": 20},
+    ax.set_xlabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]", fontdict={"fontsize": 20},
                 labelpad=20)
 
     plt.savefig(out_path)
@@ -133,11 +134,11 @@ def altitude_lingress_mean(df, out_path, year):
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
     plt.gray()
 
-    x = df.loc[:, 'seed_cott_weight_(g)'].groupby(df.loc[:, 'id_tag']).mean()
-    y = df.loc[:, '2D_yield_area'].groupby(df.loc[:, 'id_tag']).mean()
+    y = df.loc[:, 'seed_cott_weight_(g)'].groupby(df.loc[:, 'id_tag']).mean()
+    x = df.loc[:, '2D_yield_area'].groupby(df.loc[:, 'id_tag']).mean()
 
-    max_x = df.loc[df['year'] == year, 'seed_cott_weight_(g)'].max()
-    max_y = df.loc[df['year'] == year, '2D_yield_area'].max()
+    max_y = df.loc[df['year'] == year, 'seed_cott_weight_(g)'].max()
+    max_x = df.loc[df['year'] == year, '2D_yield_area'].max()
 
     coeffs, poly_eqn, r_square = get_poly_hat(x, y, 1)
     line_equation = clean_lin_eq(coeffs)
@@ -148,8 +149,8 @@ def altitude_lingress_mean(df, out_path, year):
     ax.plot(x_linspace, y_hat, ':', color='#808B96', linewidth=3)
     ax.plot(x, y, 'o', color='#000000', markersize=8)
 
-    plt.xlim(0 - int(max_x * .05), max_x + int(max_x * .10))
-    plt.ylim(0 - int(max_y * .08), max_y + int(max_y * .13))
+    plt.xlim(0 - int(max_x * .08), max_x + int(max_x * .13))
+    plt.ylim(0 - int(max_y * .05), max_y + int(max_y * .10))
 
     left, right = plt.xlim()
     bottom, top = plt.ylim()
@@ -165,15 +166,15 @@ def altitude_lingress_mean(df, out_path, year):
     ax.text(function_position_x, function_position_y, line_equation, fontdict={"fontsize": 24})
     ax.text(r_square_position_x, r_square_position_y, r_square, fontdict={"fontsize": 26})
 
-    ax.set_title(label=r"\[\textbf{PCCA Mean Across Altitudes vs Hand Harvested\ " + str(year) + "}\]",
+    ax.set_title(label=r"\[\textbf{Hand Harvested vs PCCA Mean Across Altitudes\ " + str(year) + "}\]",
                  fontdict={"fontsize": 20},
                  pad=20)
 
-    ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
+    ax.set_ylabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
 
-    ax.set_ylabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]",
+    ax.set_xlabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
 
@@ -190,8 +191,8 @@ def altitude_multiples(df, out_path, h, w):
     plt.gray()
 
     for (altitude, ax) in zip(altitudes, axs.ravel()):
-        x = df.loc[df['altitude'] == altitude, 'seed_cott_weight_(g)']
-        y = df.loc[df['altitude'] == altitude, '2D_yield_area']
+        y = df.loc[df['altitude'] == altitude, 'seed_cott_weight_(g)']
+        x = df.loc[df['altitude'] == altitude, '2D_yield_area']
 
         coeffs, poly_eqn, r_square = get_poly_hat(x, y, 1)
         line_equation = clean_lin_eq(coeffs)
@@ -230,7 +231,7 @@ def altitude_multiples(df, out_path, h, w):
                       fontdict={"fontsize": 8},
                       labelpad=10)
 
-        fig.suptitle(r"\[\textbf{PCCA vs Hand Harvested By Altitude\ " + str(year) + "}\]", fontdict={"fontsize": 8},
+        fig.suptitle(r"\[\textbf{Hand Harvested vs PCCA By Altitude\ " + str(year) + "}\]", fontdict={"fontsize": 8},
                      x=0.1, y=.95, horizontalalignment='left', verticalalignment='top')
 
     plt.savefig(out_path)
@@ -248,8 +249,8 @@ def r_square_vs_altitude(df, out_path, year):
     r_square_values = []
     for altitude in altitudes:
 
-        x = df.loc[df['altitude'] == altitude, 'seed_cott_weight_(g)']
-        y = df.loc[df['altitude'] == altitude, '2D_yield_area']
+        y = df.loc[df['altitude'] == altitude, 'seed_cott_weight_(g)']
+        x = df.loc[df['altitude'] == altitude, '2D_yield_area']
 
         coeffs, poly_eqn, r_square = get_poly_hat(x, y, 1)
         line_equation = clean_lin_eq(coeffs)
@@ -321,20 +322,20 @@ def plot_slopes_from_lingress(slopes, year, out_path):
     ax.plot(x, y, 'o', color='#000000', markersize=8)
 
     plt.xlim(-10,110)
-    plt.ylim(0, 6)
+    plt.ylim(0, 1)
 
     function_position_x = 0
-    function_position_y = 0.25
+    function_position_y = 0.75
 
     r_square_position_x = 0
-    r_square_position_y = 0.5
+    r_square_position_y = 0.85
 
     r_square = r"\[{R}^{2}\ " + str(round(r_square, 3)) + "\]"
 
     ax.text(function_position_x, function_position_y, line_equation, fontdict={"fontsize": 16})
     ax.text(r_square_position_x, r_square_position_y, r_square, fontdict={"fontsize": 18})
 
-    ax.set_title(label=r"\[\textbf{Linear Model Slope vs Altitude\]",
+    ax.set_title(label=r"\[\textbf{Linear Model Slope vs Altitude}\]",
                  fontdict={"fontsize": 20},
                  pad=20)
 

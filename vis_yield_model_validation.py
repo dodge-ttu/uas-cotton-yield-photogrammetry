@@ -69,7 +69,7 @@ def year_lingress(df, out_path, year, all=False):
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
     plt.gray()
 
-    x = df.loc[:, 'yield_kg_per_ha'].values
+    x = df.loc[:, 'machine_harv_kg_per_ha'].values
     y = df.loc[:, 'predicted_kilo_per_ha'].values
 
     coeffs, poly_eqn, r_square = get_poly_hat(x, y, 1)

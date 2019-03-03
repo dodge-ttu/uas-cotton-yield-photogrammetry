@@ -244,7 +244,6 @@ def histogram_all_deviations(df, out_path):
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
     data = df.loc[:, 'distance_to_base_m'].values * 100 # convert to centimeters
-    data = data[data < 15.6]
     print("min deviation {}".format(data.min()))
     print("max deviation {}".format(data.max()))
     print("mean deviation {}".format(data.mean()))

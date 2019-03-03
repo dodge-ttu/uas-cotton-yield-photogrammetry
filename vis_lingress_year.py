@@ -69,15 +69,15 @@ def year_lingress(df, out_path, year, all=False):
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
     plt.gray()
 
-    x = df.loc[:, 'seed_cott_weight_(g)']
-    y = df.loc[:, '2D_yield_area']
+    y = df.loc[:, 'seed_cott_weight_(g)']
+    x = df.loc[:, '2D_yield_area']
 
     if all:
-        max_x = df.loc[:, 'seed_cott_weight_(g)'].max()
-        max_y = df.loc[:, '2D_yield_area'].max()
+        max_y = df.loc[:, 'seed_cott_weight_(g)'].max()
+        max_x = df.loc[:, '2D_yield_area'].max()
     else:
-        max_x = df.loc[df['year'] == year, 'seed_cott_weight_(g)'].max()
-        max_y = df.loc[df['year'] == year, '2D_yield_area'].max()
+        max_y = df.loc[df['year'] == year, 'seed_cott_weight_(g)'].max()
+        max_x = df.loc[df['year'] == year, '2D_yield_area'].max()
 
     coeffs, poly_eqn, r_square = get_poly_hat(x, y, 1)
     line_equation = clean_lin_eq(coeffs)
@@ -94,11 +94,11 @@ def year_lingress(df, out_path, year, all=False):
     left, right = plt.xlim()
     bottom, top = plt.ylim()
 
-    function_position_x = left + right*.03
-    function_position_y = top*.95 - (top*.12)
+    function_position_x = left + right*.68
+    function_position_y = top*.10 - (top*.12)
 
-    r_square_position_x = left + right*.03
-    r_square_position_y = top*.95 - (top*.06)
+    r_square_position_x = left + right*.68
+    r_square_position_y = top*.10 - (top*.06)
 
     r_square = r"\[{R}^{2}\ " + str(round(r_square, 3)) + "\]"
 
@@ -115,11 +115,11 @@ def year_lingress(df, out_path, year, all=False):
     #               labelpad=20)
 
     # Grams only on x axis
-    ax.set_xlabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
+    ax.set_ylabel(r"\[\textbf{Hand Harvested Yield}\ \left({g}\right)\]",
                   fontdict={"fontsize": 20},
                   labelpad=20)
 
-    ax.set_ylabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]", fontdict={"fontsize": 20},
+    ax.set_xlabel(r"\[\textbf{Pixel Counts Corrected for Altitude}\ \left({cm}^{2}\right)\]", fontdict={"fontsize": 20},
                 labelpad=20)
 
     plt.savefig(out_path)
