@@ -20,11 +20,8 @@ def count_white_pix(sample_images=None, thresh_value=None):
         image_copy = image.copy()
         h, w, c = image.shape
         b, g, r = cv2.split(image)
-
-        img_gray = b
-        #img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        #img_gray = cv2.medianBlur(img_gray, 7)
-        (T, thresh) = cv2.threshold(img_gray, thresh_value, 255, cv2.THRESH_BINARY)
+        
+        (T, thresh) = cv2.threshold(b, thresh_value, 255, cv2.THRESH_BINARY)
 
         mask_data = np.nonzero(thresh)
 
