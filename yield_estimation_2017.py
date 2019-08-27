@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 def count_white_pix(sample_images=None, thresh_value=None):
 
-    font = cv2.FONT_HERSHEY_SIMPLEX
+    #font = cv2.FONT_HERSHEY_SIMPLEX
 
     images_counted_marked = []
     pixel_counts = []
